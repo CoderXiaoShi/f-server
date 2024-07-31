@@ -1,0 +1,33 @@
+extends layout
+
+block content
+  h1= 'f-server'
+  ul(style="list-style: none;")
+    li 开发者:  程序员小石   
+      a(class="link-opacity-100-hover", href="http://xinglong.tech/", target="_black")= 'http://xinglong.tech/ '
+    li 源代码: 
+      a(class="link-opacity-100-hover", href="https://github.com/CoderXiaoShi/f-server", target="_black") f-server
+  hr
+
+
+  div(class="container")
+    nav(aria-label="breadcrumb")
+      ol(class="breadcrumb")
+        each item in breadcrumb
+          li(class=`breadcrumb-item ${item.isLast ? '' : 'active'}`)
+            if item.isLast
+              span= item.name
+            else 
+              a(href=`${item.path}`)= item.name
+
+    ul(class="list-group")
+      each fileItem in fileList
+        li(class="list-group-item  d-flex justify-content-between")
+          div(class="")!= fileItem.name
+          div
+            if fileItem.stat === 0
+              a(
+                class="btn btn-primary btn-sm btn-delete-file" 
+                role="button", 
+                data-url=`${fileItem.path}`
+              ) 删除
