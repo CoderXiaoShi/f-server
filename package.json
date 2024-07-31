@@ -1,7 +1,7 @@
 {
   "name": "f-server",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "bin": {
     "f-server": "bin/www"
   },
