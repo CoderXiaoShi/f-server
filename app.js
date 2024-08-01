@@ -6,7 +6,10 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const fs = require('fs')
+const send = require('koa-send');
 const path = require('path')
+const mime = require('mime-types')
+
 
 const index = require('./routes/index')
 
@@ -27,6 +30,22 @@ app.use(views(__dirname + '/views', {
 
 // logger
 app.use(async (ctx, next) => {
+
+  // 设置允许的源，这里允许所有源
+  ctx.set('Access-Control-Allow-Origin', '*');
+  // 允许的请求方法
+  ctx.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  // 允许的请求头
+  ctx.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // 允许携带 Cookie 等凭证（如果需要）
+  ctx.set('Access-Control-Allow-Credentials', 'true');
+
+  if (ctx.method === 'OPTIONS') {
+    // 对于 OPTIONS 预检请求，直接返回 204 No Content 响应
+    ctx.status = 204;
+    return;
+  }
+
   const start = new Date()
   await next()
   const ms = new Date() - start
@@ -36,12 +55,17 @@ app.use(async (ctx, next) => {
 // routes
 app.use(index.routes(), index.allowedMethods())
 
-
 app.use(async (ctx, next) => {
 
+  // if ('/' == ctx.path) return ctx.body = 'Try GET /package.json';
+  // await send(ctx, ctx.path);
+  // await send(ctx, '/stylesheets/bootstrap.css', { root: __dirname + '/public' });
+  // await send(ctx, '/log/error.2023-01-03.log', { root: process.cwd() });
+  // return;
+  console.log('-------------------------')
   const curPath = path.join(
     process.cwd(),
-    ctx.url
+    decodeURIComponent(ctx.url)
   )
 
   console.log('curPath: ', curPath);
@@ -55,16 +79,43 @@ app.use(async (ctx, next) => {
       文本: 返回文本内容全文
       markdown: 渲染, 可以修改, 保存
   */
+  console.log('文件是否存在: ', fs.existsSync(curPath))
   if (fs.existsSync(curPath)) {
+
+    // 如果是文件
+    const currStat = fs.statSync(curPath);
+
+    if (!currStat.isDirectory()) {
+      console.log('遇到了文件--------', curPath, ctx.url)
+      const contentType = mime.lookup(curPath);
+      ctx.response.set('Content-Type', contentType)
+      ctx.response.set('Content-Length', currStat.size);
+      ctx.response.set('Last-Modified', currStat.mtime.toUTCString());
+      ctx.response.set('ETag', `${currStat.size}-${currStat.mtime.getTime()}`);
+      ctx.response.set('Cache-Control', 'max-age=3600');
+
+      ctx.status = 200
+
+      ctx.body = fs.createReadStream(curPath);
+
+      return;
+    } else {
+
+    }
+
+    // 如果是文件夹
 
     fileList = fs.readdirSync(curPath, {
       withFileTypes: true
     });
     fileList = fileList.map(f => {
-      let name = `<span data-url="${ctx.url !== '/' ? ctx.url : ''}/${f.name}">${f.name}</span>`
-      if (f.isDirectory()) {
-        name = `<a href="${ctx.url !== '/' ? ctx.url : ''}/${f.name}">${f.name}</a>`;
-      }
+      let name = ''
+      // if (f.isDirectory()) {
+      //   name = `<a href="${ctx.url !== '/' ? ctx.url : ''}/${f.name}">${f.name}</a>`;
+      // } else {
+      //   name = `<a href="${ctx.url !== '/' ? ctx.url : ''}/${f.name}">${f.name}</a>`;
+      // }
+      name = `<a href="${ctx.url !== '/' ? ctx.url : ''}/${f.name}">${f.name}</a>`;
       return {
         name: name,
         path: path.join(curPath, f.name),
@@ -74,6 +125,10 @@ app.use(async (ctx, next) => {
     fileList = fileList.sort((n1, n2) => {
       return n2.stat - n1.stat
     })
+  } else {
+    console.log('文件不存在')
+    ctx.status = 404;
+    return;
   }
 
   let breadcrumb = []
