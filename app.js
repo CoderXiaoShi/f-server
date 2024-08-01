@@ -99,8 +99,6 @@ app.use(async (ctx, next) => {
       ctx.body = fs.createReadStream(curPath);
 
       return;
-    } else {
-
     }
 
     // 如果是文件夹
