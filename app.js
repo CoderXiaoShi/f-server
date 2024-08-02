@@ -95,7 +95,6 @@ app.use(async (ctx, next) => {
       ctx.response.set('Cache-Control', 'max-age=3600');
 
       ctx.status = 200
-
       ctx.body = fs.createReadStream(curPath);
 
       return;
