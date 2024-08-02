@@ -280,7 +280,7 @@ LiveServer.start = function(options) {
 			curDirectory = curDirectory.join('/')
 			console.log('curDirectory: ', curDirectory);
 			res.writeHead(302, {
-				'Location': encodeURIComponent(curDirectory)
+				'Location': decodeURIComponent(encodeURIComponent(curDirectory))
 			});
 			// 发送响应体（虽然对于重定向来说，响应体不是必需的）
 			res.end('Redirecting to curDirectory');
