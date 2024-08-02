@@ -255,8 +255,9 @@ LiveServer.start = function(options) {
 			let curDirectory = params.path.split('/')
 			curDirectory.pop()
 			curDirectory = curDirectory.join('/')
+			console.log('curDirectory: ', curDirectory);
 			res.writeHead(302, {
-				'Location': curDirectory
+				'Location': encodeURIComponent(curDirectory)
 			});
 			// 发送响应体（虽然对于重定向来说，响应体不是必需的）
 			res.end('Redirecting to curDirectory');
