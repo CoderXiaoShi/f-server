@@ -1,6 +1,7 @@
 {
-  "name": "f-server",
+  "name": "@xinglong.shi/f-server",
   "version": "1.0.0",
+  "private": false,
   "description": "live-server 替代品, 新增了可以删除文件",
   "keywords": [
     "front-end",
