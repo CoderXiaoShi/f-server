@@ -11,6 +11,7 @@ var fs = require('fs'),
 	open = require('opn'),
 	es = require("event-stream"),
 	os = require('os'),
+	{ exec } = require('child_process'),
 	chokidar = require('chokidar');
 require('colors');
 
@@ -242,6 +243,28 @@ LiveServer.start = function(options) {
 	app.use(staticServerHandler) // Custom static server
 		.use(entryPoint(staticServerHandler, file))
 		.use(serveIndex(root, { icons: true }));
+
+	// 打开文件夹
+	app.use('/open', async (req, res) => {
+		console.log('open: ', root, queryString(req.url));
+		const params = queryString(req.url)
+		try {
+			let filePath = path.join(root, params.path) 
+			if (fs.existsSync(filePath)) {
+				// 如果是苹果系统
+				if (process.platform === 'darwin') {
+					exec(`open ${filePath}`)
+				} else if (process.platform === 'win32') {
+					// 如果是 windows 系统
+					exec(`start ${filePath}`)
+				}
+			}
+			res.end('ok')
+		} catch (error) {
+			console.error(error);
+			res.end('error')
+		}
+	})
 
 	// 删除文件接口
 	app.use('/deleteFile', async (req, res, next) => {

@@ -306,7 +306,7 @@ function createHtmlFileList(files, dir, useIcons, view) {
     
     // 必须不是根目录, 必须是文件
     if (hrefStr === '/' || isDir) {
-      delHtml = '';
+      delHtml = `<span data-opendir="${hrefStr}" title="打开文件夹">👉</span>`;
     }
 
     return '<li><a href="'

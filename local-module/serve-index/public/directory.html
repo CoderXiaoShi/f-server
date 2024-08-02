@@ -3,7 +3,7 @@
   <head>
     <meta charset='utf-8'> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>1---listing directory {directory}</title>
+    <title>listing directory {directory}</title>
     <style>{style}</style>
     <script>
       function $(id){
@@ -69,11 +69,10 @@
 
       $(window).on('content loaded', function(){
         $('search').on('keyup', search);
-        document.querySelectorAll('[data-delHref]').forEach(eml => {
+        document.querySelectorAll('[data-opendir]').forEach(eml => {
           $(eml).on('click', e => {
-            e.stopPropagation();
-            console.log('删除', e)
-            // e.defaultPrevent();
+            console.log('data-opendir', e.target)
+            fetch(`/open?path=${e.target.dataset['opendir']}`)
           })
         })
         // data-delHref
