@@ -1,32 +1,66 @@
 {
   "name": "f-server",
-  "version": "0.1.0",
-  "private": false,
-  "bin": {
-    "f-server": "bin/www"
-  },
-  "scripts": {
-    "start": "node bin/www",
-    "dev": "./node_modules/.bin/nodemon bin/www",
-    "prd": "pm2 start bin/www",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "version": "1.0.0",
+  "description": "live-server 替代品, 新增了可以删除文件",
+  "keywords": [
+    "front-end",
+    "development",
+    "tool",
+    "server",
+    "http",
+    "cli"
+  ],
+  "author": "CoderXiaoShi",
   "dependencies": {
-    "debug": "^4.1.1",
-    "koa": "^2.7.0",
-    "koa-bodyparser": "^4.2.1",
-    "koa-convert": "^1.2.0",
-    "koa-json": "^2.0.2",
-    "koa-logger": "^3.2.0",
-    "koa-onerror": "^4.1.0",
-    "koa-router": "^7.4.0",
-    "koa-send": "^5.0.1",
-    "koa-static": "^5.0.0",
-    "koa-views": "^6.2.0",
-    "mime-types": "^2.1.35",
-    "pug": "^2.0.3"
+    "chokidar": "^2.0.4",
+    "colors": "1.4.0",
+    "connect": "^3.6.6",
+    "cors": "latest",
+    "event-stream": "3.3.4",
+    "faye-websocket": "0.11.x",
+    "http-auth": "3.1.x",
+    "morgan": "^1.9.1",
+    "object-assign": "latest",
+    "opn": "latest",
+    "proxy-middleware": "latest",
+    "send": "latest",
+    "serve-index": "file:./local-module/serve-index"
   },
   "devDependencies": {
-    "nodemon": "^1.19.1"
+    "eslint": "^5.9.0",
+    "jshint": "^2.9.6",
+    "mocha": "^5.2.0",
+    "supertest": "^3.3.0"
+  },
+  "scripts": {
+    "lint": "eslint live-server.js index.js",
+    "hint": "jshint live-server.js index.js",
+    "test": "mocha test --exit && npm run lint"
+  },
+  "bin": {
+    "f-server": "./live-server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CoderXiaoShi/f-server.git"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "preferGlobal": true,
+  "license": "MIT",
+  "eslintConfig": {
+    "env": {
+      "node": true
+    },
+    "rules": {
+      "quotes": 0,
+      "curly": 0,
+      "strict": 0,
+      "no-process-exit": 0,
+      "eqeqeq": 1,
+      "no-unused-vars": 1,
+      "no-shadow": 1
+    }
   }
 }
